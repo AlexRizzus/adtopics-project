@@ -4,7 +4,9 @@ from datetime import datetime
 from stat import SF_APPEND
 import numpy as np
 
-g1,g2,g3 = 0
+g1 = 0
+g2 = 0
+g3 = 0
 pkO=0
 prover_secret_key=0
 class Signature:
@@ -34,17 +36,28 @@ def or_vector(H):
     else:
         return H[H.count()-1] | or_vector(H.pop())
 
+def multiply_vect(V):
+    if V.count() == 1:
+        return V[0]
+    else:
+        return V[V.count()-1] * multiply_vect (V.pop())
+
+def publicKeyAggregation(pkList):
+    return multiply_vect(pkList)
+
 def Sign(m,M):
     if m == M:
-        return Signature(pow(hb.sha3_256(m),self.private_key),[])
+        return Signature(pow(hb.sha3_256(m),self.private_key),list)
     else:
-        return Signature(pow(hb.sha3_256(m),self.private_key),[Beta(m,self.public_key)])
-        
+        return Signature(pow(hb.sha3_256(m),self.private_key),list(Beta(m,self.public_key)))
+
 def getGoodConfigs():       #Crea array di interi random per simulare software config di 10 dispositivi
     softConfig = np.random.randint(1000000000000000000000000000000000000000,
                             10000000000000000000000000000000000000000,20)
     return softConfig   #Salvare questo array nel main per usare funzione getSoftConfig( softConfig ) 
 
+def aggregateSignature(sig1, sig2):
+    return Signature(sig1.t * sig2.t, sig1.B.append(sig2.B))
 
 def getSoftConfig(softConfig, legit):      #ritorna un elemento cauale di softConfig se legit == 1
     if legit==1:                           #altrimenti ritorna elemento non in softConfig 
@@ -91,7 +104,5 @@ def VerifyChallenge(token):
               print("invalid signature for the request")
               return 0
     return 1
-
-
 
 
