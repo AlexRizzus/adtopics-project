@@ -1,6 +1,8 @@
 from asyncio.windows_events import NULL
 import hashlib as hb
 from datetime import datetime
+from stat import SF_APPEND
+import numpy as np
 
 g1,g2,g3 = 0
 pkO=0
@@ -8,6 +10,10 @@ class Signature:
     def __init__(self, t, B):
         self.t = t
         self.B = B
+class AttestationCounter:
+    def __init__(self, status = "free", v = 0) -> None:
+        self.status = status
+        self.v = v
 
 class Att_Token:
     def __init__(self, H, cl, vl, t, signo) -> None:
@@ -22,6 +28,37 @@ def or_vector(H):
         return H[0]
     else:
         return H[H.count()-1] | or_vector(H.pop())
+
+def getGoodConfigs():       #Crea array di interi random per simulare software config di 10 dispositivi
+    softConfig = np.random.randint(1000000000000000000000000000000000000000,
+                            10000000000000000000000000000000000000000,20)
+    return softConfig   #Salvare questo array nel main per usare funzione getSoftConfig( softConfig ) 
+
+
+def getSoftConfig(softConfig, legit):      #ritorna un elemento cauale di softConfig se legit == 1
+    if legit==1:                           #altrimenti ritorna elemento non in softConfig 
+        return softConfig[np.random.randint(0,20)]
+    else:
+        return(10000000000000000000000000000000000000001) 
+
+def createCounterList():    #crea lista di 10 AttestationCounter tutti free e con counter 0   
+    counterList = []
+    for i in range(10):
+        c = AttestationCounter()
+        counterList.append(c)
+    return counterList
+
+
+
+def getFreeCounter(counterList):        #cerca nella lista di AttestationCounter uno free, setta status a busy e incrementa v di 1
+    for i in range(counterList.length):
+        if counterList[i].status == "free":
+            counterList[i].status = "busy"
+            counterList[i].v +=1
+            return counterList[i].status, counterList[i].v
+    return NULL
+
+
 
 
 def Verify(apk, S, msg, sign):
