@@ -4,11 +4,16 @@ from datetime import datetime
 
 g1,g2,g3 = 0
 pkO=0
+prover_secret_key=0
 class Signature:
     def __init__(self, t, B):
         self.t = t
         self.B = B
 
+class Beta:
+    def __init__(self, msg, pk):
+        self.msg = msg
+        self.pk = pk
 class Att_Token:
     def __init__(self, H, cl, vl, t, signo) -> None:
         self.H = H
@@ -23,6 +28,11 @@ def or_vector(H):
     else:
         return H[H.count()-1] | or_vector(H.pop())
 
+def Sign(m,M):
+    if m == M:
+        return Signature(pow(hb.sha3_256(m),self.private_key),[])
+    else:
+        return Signature(pow(hb.sha3_256(m),self.private_key),[Beta(m,self.public_key)])
 
 def Verify(apk, S, msg, sign):
     apkm = apk / (multiply_vect(S) * multiply_vect(extract_public_keys(sign.B)))
