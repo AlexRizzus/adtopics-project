@@ -1,18 +1,38 @@
 from asyncio.windows_events import NULL
 import hashlib as hb
 from datetime import datetime
+import math
+import random as rand
 from stat import SF_APPEND
 import numpy as np
+import sympy as sp
 
 g1 = 0
 g2 = 0
-g3 = 0
-pkO=0
+gt = 0
+pkO = 0
+p = 0
 prover_secret_key=0
+
+def InitializeCryptoSystem():
+    p = sp.randprime(100000000000,1000000000000000000)
+    g1 = rand.randrange(100000000000,1000000000000000000)
+    g2 = rand.randrange(100000000000,1000000000000000000)
+    gt = rand.randrange(100000000000,1000000000000000000)
+
+def generateKeys():
+    self.privateKey = rand.randrange(0,p)
+    self.publicKey = g2 ** self.privateKey
+
+def H(msg):
+    x = hb.sha256(msg)
+    return g1**x
+
 class Signature:
     def __init__(self, t, B):
         self.t = t
         self.B = B
+
 class AttestationCounter:
     def __init__(self, status = "free", v = 0) -> None:
         self.status = status
@@ -29,7 +49,7 @@ class Att_Token:
         self.vl = vl
         self.t = t
         self.signo = signo
-
+    
 def or_vector(H):
     if H.count() == 1:
         return H[0]
@@ -42,14 +62,25 @@ def multiply_vect(V):
     else:
         return V[V.count()-1] * multiply_vect (V.pop())
 
+def computeBilinearMap(term1, term2):
+    x = findExponent(term1, g1)
+    y = findExponent(term2, g2)
+    return gt**(x*y)
+
+def findExponent(result, base):
+    c = 2
+    while base**c <= result :
+        if base**c == result:
+            return c
+    return 0
 def publicKeyAggregation(pkList):
     return multiply_vect(pkList)
 
 def Sign(m,M):
     if m == M:
-        return Signature(pow(hb.sha3_256(m),self.private_key),list)
+        return Signature(pow(H(m),self.private_key),list)
     else:
-        return Signature(pow(hb.sha3_256(m),self.private_key),list(Beta(m,self.public_key)))
+        return Signature(pow(H(m),self.private_key),list(Beta(m,self.public_key)))
 
 def getGoodConfigs():       #Crea array di interi random per simulare software config di 10 dispositivi
     softConfig = np.random.randint(1000000000000000000000000000000000000000,
@@ -82,12 +113,21 @@ def getFreeCounter(counterList):        #cerca nella lista di AttestationCounter
             return counterList[i].status, counterList[i].v
     return NULL
 
+def multiplyBilinearMaps(list):
+    result = 1 
+    for i in list:
+        result= result * computeBilinearMap(H(i.msg),i.pk)
+    return result
 
-
+def extractPublicKeys(list):
+    result = {}
+    for i in list:
+        result.append(i.pk)
+    return result
 
 def Verify(apk, S, msg, sign):
-    apkm = apk / (multiply_vect(S) * multiply_vect(extract_public_keys(sign.B)))
-    if bilinear_map(sign.t, g2) == bilinear_map(hb.sha3_256(msg),apkm) * multiply_bilinear_maps(sign.B):
+    apkm = apk / (multiply_vect(S) * multiply_vect(extractPublicKeys(sign.B)))
+    if computeBilinearMap(sign.t, g2) == computeBilinearMap(H(msg),apkm) * multiplyBilinearMaps(sign.B):
         return sign.B
     else:
         return NULL
