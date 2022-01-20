@@ -7,7 +7,6 @@ from stat import SF_APPEND
 import numpy as np
 import sympy as sp
 from util import *
-from globals import *
 
 # general class Node
 class Node:
@@ -19,6 +18,7 @@ class Node:
     def generateKeys(self):
         self.privateKey = rand.randrange(1,p)
         self.publicKey = pow(g2,self.privateKey)
+        pklist.append(self.publicKey)
     
     def Sign(self,m,M):
         if m == M:
@@ -45,7 +45,7 @@ class Node:
              print("invalid time for the request")
              return 0
         else:
-             if not (self.Verify(pkO,[],or_vector(list([hg,token.cl,token.vl,token.t])),token.signo)):
+             if not (self.Verify(pklist[0],[],or_vector(list([hg,token.cl,token.vl,token.t])),token.signo)):
                   print("invalid signature for the request")
                   return 0
         return 1
@@ -66,5 +66,3 @@ class Node:
                 return counterList[i].status, counterList[i].v
         return NULL
 # Child class from node: Owner
-class Owner(Node):
-    pass

@@ -15,6 +15,7 @@ gt = randomBinaryFixedLength(8)
 g2 = randomBinaryFixedLength(8)
 g1 = randomBinaryFixedLength(8)
 p = primerange(1000,10000)
+pklist = {}
 
 def H(msg):
     x = hb.sha256(bin(msg).encode('utf-8'))
