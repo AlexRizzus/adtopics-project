@@ -25,3 +25,26 @@ print(owner.privateKey)
 signature = owner.Sign(12,12)
 print(signature)
 print(Verify(pklist[owner.id], {}, 12, signature))
+
+
+
+verifierNonce = randomBinaryFixedLength(20)
+
+#Aggregator
+aggregator = Node()
+aggregator.generateKeys()
+aggregator.VerifyChallenge(T)
+aggregatorSignature = Signature(0,0)
+
+#Prover
+prover = Node()
+prover.generateKeys()
+prover.VerifyChallenge(T)
+hi = prover.getSoftConfig(H, 1)
+hg = hb.sha256(or_vector(T.H))
+for i in range(len(H)):
+    if hi == H[i]:
+        hi = hg
+   
+
+prover.Sign()
