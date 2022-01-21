@@ -86,6 +86,7 @@ class Owner(Node):
         return encToken,ownerSignature2
 
 class Verifier(Node):
+    tokenMem = {}
     # stores the token after checking the owner's signature
     def storeToken(self, signo, apk, T, expTime):
         if self.Verify(pklist[0], self.nonce | apk, signo):
