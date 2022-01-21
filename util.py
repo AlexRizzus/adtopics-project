@@ -97,3 +97,4 @@ def createCounterList():    #crea lista di 10 AttestationCounter tutti free e co
         c = AttestationCounter()
         counterList.append(c)
     return counterList
+
