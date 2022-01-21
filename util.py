@@ -45,6 +45,11 @@ class Att_Token:
         self.t = t
         self.signo = signo
 
+class Challenge:
+    def __init__(self, N, T) -> None:
+        self.N = N
+        self.T = T
+
 def or_vector(H):
     if H.count() == 1:
         return H[0]

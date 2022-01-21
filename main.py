@@ -29,22 +29,41 @@ print(Verify(pklist[owner.id], {}, 12, signature))
 
 
 verifierNonce = randomBinaryFixedLength(20)
+Cha = Challenge(verifierNonce, T)
 
 #Aggregator
 aggregator = Node()
 aggregator.generateKeys()
 aggregator.VerifyChallenge(T)
-aggregatorSignature = Signature(0,0)
+alpha1 = Signature(1,{})
 
 #Prover
 prover = Node()
 prover.generateKeys()
-prover.VerifyChallenge(T)
+prover.VerifyChallenge(Cha.T)
 hi = prover.getSoftConfig(H, 1)
-hg = hb.sha256(or_vector(T.H))
+hg = hb.sha256(or_vector(Cha.T.H))
+
+M= hg|Cha.N|Cha.T.cl|Cha.T.vl
+
 for i in range(len(H)):
     if hi == H[i]:
         hi = hg
    
+m= hi|Cha.N|Cha.T.cl|Cha.T.vl
+alphai = prover.Sign(m, M)
 
-prover.Sign()
+
+#back to the Aggregator
+alpha1 = verifier.aggregateSignature(alpha1, alphai)
+
+
+#back to the verifier
+
+M = hg|Cha.N|Cha.T.cl|Cha.T.vl
+B = Verify(apk, [], M, alpha1)
+if B == NULL:
+    r = 1
+else:
+    r = 0
+
