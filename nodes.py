@@ -13,8 +13,8 @@ from util import *
 class Node:
     privateKey = 0
     publicKey = 0
-    nonce = randomBinaryFixedLength(20)
-    tokenExpirytime =  dt.datetime.now() + 300 
+    nonce = randomBinaryFixedLength(8)
+    tokenExpirytime =  dt.datetime.now() + dt.timedelta(0,300) 
     tokenMem = {}
     # generates public and private key for itself
     def generateKeys(self):
@@ -26,13 +26,13 @@ class Node:
         if m == M:
             return Signature(pow(H(m),self.privateKey),list())
         else:
-            return Signature(pow(H(m),self.privateKey),list(Beta(m,self.publicKey)))
+            return Signature(pow(H(m),self.privateKey),list([Beta(m,self.publicKey)]))
 
-    def getGoodConfigs():       #Crea array di interi random per simulare software config di 10 dispositivi
-        softConfig = np.random.randint(1000, 10000000, 20)
-        return softConfig   #Salvare questo array nel main per usare funzione getSoftConfig( softConfig )
+    def getGoodConfigs(self):       #Crea array di interi random per simulare software config di 10 dispositivi
+        softConfig = np.random.randint(1000, 10000, 20)
+        return list(softConfig)   #Salvare questo array nel main per usare funzione getSoftConfig( softConfig )
     # verifies a given signature by computing the bilinear maps
-    def Verify(apk, S, msg, sign):
+    def Verify(self, apk, S, msg, sign):
         apkm = apk // (multiply_vect(S) * multiply_vect(extractPublicKeys(sign.B)))
         if computeBilinearMap(sign.t, g2) == computeBilinearMap(H(msg),apkm) * multiplyBilinearMaps(sign.B):
             return sign.B
@@ -41,8 +41,8 @@ class Node:
     # verifies the challenge given by the verifier
     def VerifyChallenge(self,token):
         print("verification of the challenge started")
-        hg = hb.sha256(or_vector(token.H))
-        if (dt.now() > dt.strptime(token.t,"%H:%M:%S")):
+        hg = hb.sha256(or_vector(list(token.H)))
+        if (int((dt.datetime.now() - dt.datetime(1970,1,1)).total_seconds()) < token.t):
              print("invalid time for the request")
              return 0
         else:
@@ -51,44 +51,47 @@ class Node:
                   return 0
         return 1
     # aggregates two normal/aggregated signatures
-    def aggregateSignature(sig1, sig2):
-        return Signature(sig1.t * sig2.t, sig1.B.append(sig2.B))
+    def aggregateSignature(self, sig1, sig2):
+        return Signature(sig1.t * sig2.t, sig1.B + sig2.B)
         
 
-    def getSoftConfig(softConfig, legit):      #ritorna un elemento cauale di softConfig se legit == 1
+    def getSoftConfig(self, softConfig, legit):      #ritorna un elemento cauale di softConfig se legit == 1
         if legit==1:                           #altrimenti ritorna elemento non in softConfig 
-            return softConfig[np.random.randint(0,20)]
+            return hb.sha256(softConfig[np.random.randint(0,20)])
         else:
-            return(10000001)
+            return hb.sha256(str(10001).encode('utf-8'))
 
-    def getFreeCounter(counterList):        #cerca nella lista di AttestationCounter uno free, setta status a busy e incrementa v di 1
-        for i in range(counterList.length):
+    def getFreeCounter(self,counterList):        #cerca nella lista di AttestationCounter uno free, setta status a busy e incrementa v di 1
+        for i in range(len(counterList)):
             if counterList[i].status == "free":
                 counterList[i].status = "busy"
                 counterList[i].v +=1
-                return counterList[i].status, counterList[i].v
+                return i, counterList[i].v
         return NULL
     
 # Child classes from node: 
 class Owner(Node):
     # handles the verification request by generating a token T
-    def handleRequest(self, signv, expTime, noncev):
-        if self.Verify(pklist[1],self.nonce | expTime, signv):
-            cl, vl = self.getFreeCounter()
+    def handleRequest(self, signv, expTime, noncev, counterList):
+        if self.Verify(pklist[1],[],self.nonce | expTime.seconds, signv) != NULL:
+            cl, vl = self.getFreeCounter(counterList)
             H = self.getGoodConfigs()
-            hg = hb.sha256(or_vector(H))
-            ownerSignature1 = self.Sign(hg | cl | vl | (dt.now() + expTime))
-            T = Att_Token(H,cl,vl,dt.now() + expTime,ownerSignature1)
+            hg = hb.sha256(or_vector(list(H)))
+            expirancySeconds = int((dt.datetime.now() + expTime - dt.datetime(1970,1,1)).total_seconds())
+            ownerSignature1 = self.Sign(int(hg.hexdigest(),16) | cl | vl | expirancySeconds, int(hg.hexdigest(),16) | cl | vl | expirancySeconds)
+            T = Att_Token(H,cl,vl,expirancySeconds,ownerSignature1)
             encToken = T
-            ownerSignature2 = self.Sign(noncev | multiply_vect(pklist))
+            ownerSignature2 = self.Sign(noncev | multiply_vect(list(pklist)), noncev | multiply_vect(list(pklist)))
         else:
             print("error during the authorization of the request by the owner")
         return encToken,ownerSignature2
 
 class Verifier(Node):
-    tokenMem = {}
+    tokenMem = []
     # stores the token after checking the owner's signature
-    def storeToken(self, signo, apk, T, expTime):
-        if self.Verify(pklist[0], self.nonce | apk, signo):
-            if self.Verify(pklist[0], T.hg | T.cl | T.vl | (dt.now() + expTime), signo):
-                self.tokenMem = {T, apk}
+    def storeToken(self, signo2, apk, T):
+        if self.Verify(pklist[0],[], self.nonce | apk, signo2) != NULL:
+            if self.Verify(pklist[0],[], int(hb.sha256(or_vector(list(T.H))).hexdigest(),16) | T.cl | T.vl | T.t, T.signo) != NULL:
+                self.tokenMem = [T, apk]
+            else:
+                print("ERROR STORING THE TOKEN")

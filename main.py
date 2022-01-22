@@ -11,55 +11,75 @@ from util import *
 from nodes import *
 
 
+counterList = createCounterList()
 owner = Owner()
 owner.generateKeys()
 verifier = Verifier()
 verifier.generateKeys()
-apk = multiply_vect(pklist)
-expTime = dt.timedelta(0,300)
-
-verifierRequestToOwner = verifier.Sign(verifier.nonce , verifier.nonce | expTime.seconds())
-
-T, ownerSignature2 = owner.handleRequest(verifierRequestToOwner,expTime,verifier.nonce)
-#verifier stores the token after checking the owner's signature
-verifier.storeToken(ownerSignature2, apk, T, expTime)
-
-verifierNonce = randomBinaryFixedLength(20)
-Cha = Challenge(verifierNonce, verifier.tokenMem[0])
-
-#Aggregator
 aggregator = Node()
 aggregator.generateKeys()
+prover_number = int(input())
+provers = []
+for i in range(prover_number):
+    provers.append(Node())
+    provers[i].generateKeys()
+apk = multiply_vect(list(pklist))
+expTime = dt.timedelta(0,300)
+
+
+verifierRequestToOwner = verifier.Sign((verifier.nonce | expTime.seconds) , (verifier.nonce | expTime.seconds))
+
+T, ownerSignature2 = owner.handleRequest(verifierRequestToOwner,expTime,verifier.nonce,counterList)
+#verifier stores the token after checking the owner's signature
+verifier.storeToken(ownerSignature2, apk, T)
+
+verifierNonce = randomBinaryFixedLength(8)
+cha = Challenge(verifierNonce, verifier.tokenMem[0])
+
+#Aggregator
 aggregator.VerifyChallenge(T)
-alpha1 = Signature(1,{})
+alpha1 = Signature(1,list())
 
 #Prover
-prover = Node()
-prover.generateKeys()
-prover.VerifyChallenge(Cha.T)
-hi = prover.getSoftConfig(H, 1)
-hg = hb.sha256(or_vector(Cha.T.H))
+for prover in provers:
+    prover.VerifyChallenge(cha.T)
+    hi = prover.getSoftConfig(cha.T.H, 0)
+    hg = hb.sha256(or_vector(list(cha.T.H)))
 
-M= hg|Cha.N|Cha.T.cl|Cha.T.vl
+    M= int(hg.hexdigest(),16)|cha.N|cha.T.cl|cha.T.vl
 
-for i in range(len(H)):
-    if hi == H[i]:
-        hi = hg
+    for i in range(len(cha.T.H)):
+        if hi == cha.T.H[i]:
+            hi = hg
    
-m= hi|Cha.N|Cha.T.cl|Cha.T.vl
-alphai = prover.Sign(m, M)
+    m= int(hi.hexdigest(),16)|cha.N|cha.T.cl|cha.T.vl
+    alphai = prover.Sign(m, M)
 
 
 #back to the Aggregator
-alpha1 = verifier.aggregateSignature(alpha1, alphai)
+    alpha1 = verifier.aggregateSignature(alpha1, alphai)
 
 
 #back to the verifier
 
-M = hg|Cha.N|Cha.T.cl|Cha.T.vl
-B = Verify(apk, [], M, alpha1)
-if B == NULL:
+M = int(hg.hexdigest(),16)|cha.N|cha.T.cl|cha.T.vl
+B = verifier.Verify(apk, [owner.publicKey, verifier.publicKey, aggregator.publicKey], M, alpha1)
+if B == []:
     r = 1
 else:
-    r = 0
-
+    if B == NULL:
+        r = 2
+    else:
+        r = 0
+if r == 1:
+    print("the system can be trusted")
+else:
+    if r == 0:
+        print("these nodes cannot be trusted")
+    else:
+        print("incompatibility error with the signature")
+    for i in B:
+        print(i.pk)
+    print("list of all nodes pk:")
+    for i in pklist:
+        print(i)

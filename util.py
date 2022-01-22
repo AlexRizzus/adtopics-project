@@ -3,7 +3,7 @@ import hashlib as hb
 import random as rand
 from stat import SF_APPEND
 from util import *
-from sympy import primerange
+from sympy import randprime
 
 def randomBinaryFixedLength(length):
     string = str()
@@ -11,11 +11,11 @@ def randomBinaryFixedLength(length):
         string = string + str(rand.randint(0,1))
     return int(string,2)
 
-gt = randomBinaryFixedLength(8)
-g2 = randomBinaryFixedLength(8)
-g1 = randomBinaryFixedLength(8)
-p = primerange(1000,10000)
-pklist = {}
+gt = randomBinaryFixedLength(4)
+g2 = randomBinaryFixedLength(4)
+g1 = randomBinaryFixedLength(4)
+p = randprime(10,100)
+pklist = []
 
 def H(msg):
     x = hb.sha256(bin(msg).encode('utf-8'))
@@ -51,16 +51,17 @@ class Challenge:
         self.T = T
 
 def or_vector(H):
-    if H.count() == 1:
+    if len(H) == 1:
         return H[0]
     else:
-        return H[H.count()-1] | or_vector(H.pop())
+        return H.pop() | or_vector(H)
 
 def multiply_vect(V):
     if len(V) == 0:
         return 1
     else:
-        return V[len(V)-1] * multiply_vect (V.pop())
+        
+        return V.pop() * multiply_vect (V)
 
 def computeBilinearMap(term1, term2):
     print("term1 " + str(term1))
@@ -91,7 +92,7 @@ def multiplyBilinearMaps(list):
     return result
 
 def extractPublicKeys(list):
-    result = {}
+    result = []
     for i in list:
         result.append(i.pk)
     return result
