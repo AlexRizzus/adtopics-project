@@ -1,7 +1,11 @@
 from asyncio.windows_events import NULL
 import hashlib as hb
+from operator import mod
 import random as rand
 from stat import SF_APPEND
+from cv2 import log
+
+import sympy
 from util import *
 from sympy import randprime
 
@@ -11,15 +15,36 @@ def randomBinaryFixedLength(length):
         string = string + str(rand.randint(0,1))
     return int(string,2)
 
-gt = randomBinaryFixedLength(4)
-g2 = randomBinaryFixedLength(4)
-g1 = randomBinaryFixedLength(4)
-p = randprime(10,100)
+gt = 13
+g2 = 10
+g1 = 5
+p = 72130926498893822734492001005677631332746356118879806659093994416564121503313
 pklist = []
+
+
+def initializeCrytoSystem():
+    # p = randprime(int(str('1')+str('0') * 255,2),int(str('1') * 256,2))
+    p = 72130926498893822734492001005677631332746356118879806659093994416564121503313
+    # factors = sympy.primefactors(p-1)
+    factors = [2, 3, 31, 663720899, 4666254422144569, 550768670793363408056383, 9472708845023994873315671]
+    generators = []
+    tempNumber = 2
+    isGen = 1
+    while len(generators) < 3:
+        for i in factors:
+            if pow(tempNumber, (p-1)//i, p) == 1:
+                isGen = 0
+                break
+        if isGen:
+            generators.append(tempNumber)
+        tempNumber += 1
+        isGen = 1
+    return p, generators[0], generators[1], generators[2]
 
 def H(msg):
     x = hb.sha256(bin(msg).encode('utf-8'))
-    result = g1**(int(x.hexdigest(),16) % int(p))
+    # check if this is right !!!
+    result = mod(int(x.hexdigest(),16),p)
     return result
 
 
@@ -64,18 +89,15 @@ def multiply_vect(V):
         return V.pop() * multiply_vect (V)
 
 def computeBilinearMap(term1, term2):
-    print("term1 " + str(term1))
     x = findExponent(term1, g1)
     y = findExponent(term2, g2)
-    print(x)
-    print(y)
-    return gt**(x*y)
+    return pow(gt, (x*y) % p, p)
 
 def findExponent(result, base):
     c = 1
-    while base**c <= result :
+    while c < p:
         # print(c)
-        if base**c == result:
+        if pow(base,c,p) == result:
             return c
         c= c+1
     return 0

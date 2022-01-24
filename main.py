@@ -7,10 +7,11 @@ from stat import SF_APPEND
 import numpy as np
 import rsa
 import sympy as sp
+import util
 from util import *
 from nodes import *
 
-
+util.p, util.g1, util.g2, util.gt = initializeCrytoSystem()
 counterList = createCounterList()
 owner = Owner()
 owner.generateKeys()
@@ -43,7 +44,7 @@ alpha1 = Signature(1,list())
 #Prover
 for prover in provers:
     prover.VerifyChallenge(cha.T)
-    hi = prover.getSoftConfig(cha.T.H, 0)
+    hi = prover.getSoftConfig(cha.T.H, np.random.choice(np.arange(0, 2), p=[0.8, 0.2]))
     hg = hb.sha256(or_vector(list(cha.T.H)))
 
     M= int(hg.hexdigest(),16)|cha.N|cha.T.cl|cha.T.vl

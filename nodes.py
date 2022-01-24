@@ -19,14 +19,14 @@ class Node:
     # generates public and private key for itself
     def generateKeys(self):
         self.privateKey = rand.randrange(1,p)
-        self.publicKey = pow(g2,self.privateKey)
+        self.publicKey = pow(g2,self.privateKey, p)
         pklist.append(self.publicKey)
     # signs a message m depending on the fact that it's the same as the default message M or not
     def Sign(self,m,M):
         if m == M:
-            return Signature(pow(H(m),self.privateKey),list())
+            return Signature(pow(H(m),self.privateKey, p),list())
         else:
-            return Signature(pow(H(m),self.privateKey),list([Beta(m,self.publicKey)]))
+            return Signature(pow(H(m),self.privateKey, p),list([Beta(m,self.publicKey)]))
 
     def getGoodConfigs(self):       #Crea array di interi random per simulare software config di 10 dispositivi
         softConfig = np.random.randint(1000, 10000, 20)
