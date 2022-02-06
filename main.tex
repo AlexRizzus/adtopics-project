@@ -105,7 +105,7 @@ Aliquam elementum nulla at arcu finibus aliquet. Praesent congue ultrices nisl p
 \end{table}
 
 %------------------------------------------------
-
+ 
 \section{Premises}
 
 \begin{figure}
@@ -124,6 +124,8 @@ the challenge to the closest Aggregator in the propagation tree, this node proce
 or Provers. The latter then sign a message according to their software configuration being legit or compromised. The signature travel back to the Aggregator
 that creates the aggregated signature of its neighbours. Lastly the Verifier checks the aggregated signature of all the tree and determines which devices
 can be trusted and which are compromised.\\
+For implementing this protocol we chose an elliptic-curve implementation used in Ethereum and called ''bn128'' as it uses a Barreto-Naehrig curve and it's said to offer 128 bits security.
+
 
 \section{Implementation and analysis}
 
@@ -131,8 +133,8 @@ In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui no
 
 \section{Methods and tools}
 
-In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
-
+For what concerns the work shown above, we wrote our implementation in python and ran it on a google colab instance with multi-threading enabled in order to resemble the possible interaction with the network.
+We then executed experiments with different number of provers, different compromised devices rate in order to extract execution time for the most important step of the algorithm.
 \section{Results}
 
 In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
