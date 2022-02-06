@@ -129,10 +129,12 @@ For implementing this protocol we chose an elliptic-curve implementation used in
 
 \section{Implementation and analysis}
 
-We wrote an implementation of the algorithm in python, we first defined all the different classes in order to simulate all the nodes (Prover, Aggregator, Owner and Verifier).
-Before utilizing ''bn128'' we tried to define our curve for the 
+We wrote an implementation of the algorithm in python, we first defined all the different classes in order to simulate all the nodes (Prover, Aggregator, Owner and Verifier) where neighbours can be assigned to each node in order to resemble a static network configuration.
+Before utilizing ''bn128'' we tried to define our curve for the ECC cryptography implementation but for the vast majority of curves that you can choose don't have an easily computable bilinear map, so they were not suitable for our work. At last we decided to use an already existing curve called Barreto-Naherig curve.
 After choosing the curve we incorporated the ''bn128'' implementation in our code adding various helping function to generate the keys, software configurations, tokens and challenges.
+This implementation uses the Barreto-Naehrig curve on a finite field Zp with p of 256 bits, for the computation of the bilinear map this implementation relies on the Tate-pairing technique which is the fastest for this task. In fact, compared to the Weil pairing the Tate pairing requires only one iteration of the Miller's loop function instead of three simplyfying a lot the computation of the pairing.
 
+We now proceed to evaluate the computational, memory and communication costs of SANA for Provers and Aggregators since we can't make assumption on their costs and the algorithm needs to be feasible even for low-end devices
 
 \section{Methods and tools}
 
