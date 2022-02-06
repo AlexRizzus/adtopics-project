@@ -129,12 +129,16 @@ For implementing this protocol we chose an elliptic-curve implementation used in
 
 \section{Implementation and analysis}
 
-In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
+We wrote an implementation of the algorithm in python, we first defined all the different classes in order to simulate all the nodes (Prover, Aggregator, Owner and Verifier).
+Before utilizing ''bn128'' we tried to define our curve for the 
+After choosing the curve we incorporated the ''bn128'' implementation in our code adding various helping function to generate the keys, software configurations, tokens and challenges.
+
 
 \section{Methods and tools}
 
 For what concerns the work shown above, we wrote our implementation in python and ran it on a google colab instance with multi-threading enabled in order to resemble the possible interaction with the network.
 We then executed experiments with different number of provers, different compromised devices rate in order to extract execution time for the most important step of the algorithm.
+After that we proceded by performing theorical considerations and calculations in order to estimate the computational complexity, the memory and communication cost, and the total time of the algorithm.
 \section{Results}
 
 In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
