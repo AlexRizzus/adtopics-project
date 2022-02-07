@@ -89,21 +89,6 @@ Morbi iaculis posuere arcu, ut scelerisque sem. Class aptent taciti sociosqu ad 
 
 Aliquam elementum nulla at arcu finibus aliquet. Praesent congue ultrices nisl pretium posuere. Nunc vel nulla hendrerit, ultrices justo ut, ultrices sapien. Duis ut arcu at nunc pellentesque consectetur. Vestibulum eget nisl porta, ultricies orci eget, efficitur tellus. Maecenas rhoncus purus vel mauris tincidunt, et euismod nibh viverra. Mauris ultrices tellus quis ante lobortis gravida. Duis vulputate viverra erat, eu sollicitudin dui. Proin a iaculis massa. Nam at turpis in sem malesuada rhoncus. Aenean tempor risus dui, et ultrices nulla rutrum ut. Nam commodo fermentum purus, eget mattis odio fringilla at. Etiam congue et ipsum sed feugiat. Morbi euismod ut purus et tempus. Etiam est ligula, aliquam eget porttitor ut, auctor in risus. Curabitur at urna id dui lobortis pellentesque.
 
-\begin{table}
-	\caption{Example table}
-	\centering
-	\begin{tabular}{llr}
-		\toprule
-		\multicolumn{2}{c}{Name} \\
-		\cmidrule(r){1-2}
-		First Name & Last Name & Grade \\
-		\midrule
-		John & Doe & $7.5$ \\
-		Richard & Miles & $5$ \\
-		\bottomrule
-	\end{tabular}
-\end{table}
-
 %------------------------------------------------
  
 \section{Premises}
@@ -136,9 +121,12 @@ This implementation uses the Barreto-Naehrig curve on a finite field Zp with p o
 
 We now proceed to evaluate the computational, memory and communication costs of SANA for Provers and Aggregators since we can't make assumption on their costs and the algorithm needs to be feasible even for low-end devices.
 Starting from the computational cost we can see that the most complex functions of the protocol are the sign and verify functions as they both have to perform operations on the elliptic curve that require several multiplication to be executed.
+Table 1 report our estimations for the computational costs of the functions related to the nodes using them, for evaluating this costs we refer to the variable n which is the number of bits of the input given to the function, in our case n = 256 bits.
+
 \begin{table}
 	\caption{Computational cost for each function}
 	\centering
+	\begin{threeparttable}
 	\begin{tabular}{llr}
 		\toprule
 		Function & Node & Cost \\
@@ -148,15 +136,74 @@ Starting from the computational cost we can see that the most complex functions 
 		Verify & Verifier & $O(n^2log(n))$ \\
 		\bottomrule
 	\end{tabular}
+	\begin{tablenotes}
+	\item[1] n = number of bits in input
+	\end{tablenotes} 
+\end{threeparttable}
 \end{table}
 So we can safely say that the highest cost falls on the provers while the aggregators, which only have to perform one multiplication between objects.
+Memory costs however change the perspective of how the load is distributed over the nodes.
+As we can see the memory cost for the prover is contained as long as we choose a fair amount of counters. For the aggregator instead we can see that it's sensitive to the number of bad neighbours as the node has to memorize the public key and the message of each compromised node.
+We evaluated more in depth the problem of the aggregator by running tests to determine the effective memory cost based on the number of compromised deviced nearby each node
 
+\begin{table}
+	\caption{Memory cost for each actor}
+	\centering
+	\begin{threeparttable}
+	\begin{tabular}{lr}
+		\toprule
+		Node & Cost (bytes) \\
+		\midrule
+		Prover & $160+10*s $ \\
+		Aggregator & $276+10*s+96*z $ \\
+		\bottomrule
+	\end{tabular}
+	\begin{tablenotes}
+		\item[1] z = number of bad neighbours
+		\item[2] c = number of counters
+		\end{tablenotes} 
+	\end{threeparttable}
+\end{table}
+At last we evaluated the theoretical communication costs for the protocol, based on the bytes each actor has to send or receive.
+As for the memory cost the aggregator has to send and receive more bytes.
+\begin{table}
+	\caption{Communication cost for each actor}
+	\centering
+	\begin{threeparttable}
+	\begin{tabular}{llr}
+		\toprule
+		Node & type & Cost (bytes) \\
+		\midrule
+		Prover & sends & $32*g + 94 $ \\
+		Prover & receives & $64 + 96 * h $ \\
+		Prover & sends & $ (32*c+94)*nb + 64 + 96*z$ \\
+		Aggregator & receives & $(32*c+94) + 96* nb + 96*z $ \\
+		\bottomrule
+	\end{tabular}
+	\begin{tablenotes}
+		\item[1] nb = number of neighbours
+		\item[2] z = number of bad neighbours
+		\item[3] c = number of counters  
+		\end{tablenotes} 
+	\end{threeparttable}
+\end{table}
+
+With this theoretical results in mind we looked more in depth at the memory cost by looking at how much the number of bad neighbour would impact the aggregators, the results are shown in section \ref{sec:results}.
+
+After dealing with the theoretical costs we shifted to the practical test in order to estimate the true work load for the nodes.
+We ran several simulation to investigate the time required to perform each action of the protocol (signature, aggregation, verify...) and have a proper estimation of the total time of execution of the algorithm.
+For this calculation we used this formula:
+\[(\sum_{i=0}^{n} p_i) * t_{agg} + d * (t_{ver} + t_{hash}) + t_{sign} \]
+Where n is the number of the provers and d is the depth of the tree generated from the algorithm.
+This provides a lower bound for the execution time of the whole protocol as it relies on the fact that all node can sign simultaneously and at each level of the tree all the challenge verifications from the aggregators require the same time.
+Unfortunately this formula is not easy to use in real context as the devices move into a psace and the number of neighbour may change depending on the proximity of the other devices, so it's hard to assume what the depth of the tree can be and how much parallelization can happen while descending the tree.
 \section{Methods and tools}
 
 For what concerns the work shown above, we wrote our implementation in python and ran it on a google colab instance with multi-threading enabled in order to resemble the possible interaction with the network.
 We then executed experiments with different number of provers, different compromised devices rate in order to extract execution time for the most important step of the algorithm.
 After that we proceded by performing theorical considerations and calculations in order to estimate the computational complexity, the memory and communication cost, and the total time of the algorithm.
 \section{Results}
+\label{sec:results}
 
 In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
 
