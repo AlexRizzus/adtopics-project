@@ -156,10 +156,56 @@ So we can safely say that the highest cost falls on the provers while the aggreg
 For what concerns the work shown above, we wrote our implementation in python and ran it on a google colab instance with multi-threading enabled in order to resemble the possible interaction with the network.
 We then executed experiments with different number of provers, different compromised devices rate in order to extract execution time for the most important step of the algorithm.
 After that we proceded by performing theorical considerations and calculations in order to estimate the computational complexity, the memory and communication cost, and the total time of the algorithm.
+
 \section{Results}
+\subsection{Time cost of Aggregation}
+For what concerns the duration of the process of aggregation we extracted the aggregation time of 1 aggregator with an increasing number of provers connected to him to see if our theoretical guesses are correct.
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_0.png} % Figure image
+	\caption{Aggregation time with 0\% bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
 
-In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
+Firstly we can see in figure 2 the aggregation time of up to 1000 provers with 0\% of them being bad provers, this means that all of them signed the default message, theoretically we supposed that the cost in time 
+for the process of aggregation wuold increase linearly with the number of provers connected to the same aggregator. We can clearly see that our supposition were correct.
+Now the question was if aggregation time depends on the number of bad provers within all the provers connected to the aggregator.\\
 
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_100.png} % Figure image
+	\caption{Aggregation time with 100\% bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+
+As we supposed the percentage of bad provers do not influence the time of aggregation, in fact with 100\% bad provers (figure 3) the graph is very close to the 0\% one.\\ 
+We extracted data for 0\% 25\% 50\% 75\% and 100\% of bad provers, the results in figure 4.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_comparison.png} % Figure image
+	\caption{Aggregation time with all percentage of bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+
+\subsection{Time cost of Verification}
+The other parameter we wanted to investigate was the verification time of the aggregator with respect to the number of provers and the percentage of them not signing the default message.
+Theoretically we believed that the number of bad provers would make the verification time increase linearly, and on the other hand the time of verification should be independent on the number of legitimate provers.\\
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/Verification_0.png} % Figure image
+	\caption{Verification time cost with 0 bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+In Figure 5 we can see that the time of verification is in fact independent from the number of provers if they are all legitimate.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/verification_100.png} % Figure image
+	\caption{Verfication cost with all the provers being bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+Intsead, with 100\% of bad provers in Figure 6, the time of verification increase linearly with the number of provers, reaching up to 6000 seconds for the verification of 1000 bad provers.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/verification_comparison.png} % Figure image
+	\caption{Verification time costs comparison with different percentage of bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+The comparison of the verification time of 0\% 25\% 50\% 75\% 100\% bad provers is represented in Figure 7.\\
 \section{Conclusions}
 
 In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
