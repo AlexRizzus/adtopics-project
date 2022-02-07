@@ -54,40 +54,6 @@ SANA comes with some estimations about its memory, communication, and computatio
 We chose to implement the protocol using an ECC algorithm based on Ethereum to handle the signing and verification phases of the protocol, then we analyzed the results to prove the claims that were given in the SANA paper and at last make some considerations about the criticality of this protocol.
 %------------------------------------------------
 
-\subsection{Subsection}
-
-Nam ante risus, tempor nec lacus ac, congue pretium dui. Donec a nisl est. Integer accumsan mauris eu ex venenatis mollis. Aliquam sit amet ipsum laoreet, mollis sem sit amet, pellentesque quam. Aenean auctor diam eget erat venenatis laoreet. In ipsum felis, tristique eu efficitur at, maximus ac urna. Aenean pulvinar eu lorem eget suscipit. Aliquam et lorem erat. Nam fringilla ante risus, eget convallis nunc pellentesque non. Donec ipsum nisl, consectetur in magna eu, hendrerit pulvinar orci. Mauris porta convallis neque, non viverra urna pulvinar ac. Cras non condimentum lectus. Aliquam odio leo, aliquet vitae tellus nec, imperdiet lacinia turpis. Nam ac lectus imperdiet, luctus nibh a, feugiat urna.
-
-\begin{itemize}
-	\item First item in a list 
-	\item Second item in a list 
-	\item Third item in a list
-\end{itemize}
-
-Nunc egestas quis leo sed efficitur. Donec placerat, dui vel bibendum bibendum, tortor ligula auctor elit, aliquet pulvinar leo ante nec tellus. Praesent at vulputate libero, sit amet elementum magna. Pellentesque sodales odio eu ex interdum molestie. Suspendisse lacinia, augue quis interdum posuere, dolor ipsum euismod turpis, sed viverra nibh velit eget dolor. Curabitur consectetur tempus lacus, sit amet luctus mauris interdum vel. Curabitur vehicula convallis felis, eget mattis justo rhoncus eget. Pellentesque et semper lectus.
-
-\begin{description}
-	\item[First] This is the first item
-	\item[Last] This is the last item
-\end{description}
-
-Donec nec nibh sagittis, finibus mauris quis, laoreet augue. Maecenas aliquam sem nunc, vel semper urna hendrerit nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas pellentesque dolor lacus, sit amet pretium felis vestibulum finibus. Duis tincidunt sapien faucibus nisi vehicula tincidunt. Donec euismod suscipit ligula a tempor. Aenean a nulla sit amet magna ullamcorper condimentum. Fusce eu velit vitae libero varius condimentum at sed dui.
-
-%------------------------------------------------
-
-\subsection{Subsection}
-
-In hac habitasse platea dictumst. Etiam ac tortor fermentum, ultrices libero gravida, blandit metus. Vivamus sed convallis felis. Cras vel tortor sollicitudin, vestibulum nisi at, pretium justo. Curabitur placerat elit nunc, sed luctus ipsum auctor a. Nulla feugiat quam venenatis nulla imperdiet vulputate non faucibus lorem. Curabitur mollis diam non leo ullamcorper lacinia.
-
-Morbi iaculis posuere arcu, ut scelerisque sem. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris placerat urna id enim aliquet, non consequat leo imperdiet. Phasellus at nibh ut tortor hendrerit accumsan. Phasellus sollicitudin luctus sapien, feugiat facilisis risus consectetur eleifend. In quis luctus turpis. Nulla sed tellus libero. Pellentesque metus tortor, convallis at tellus quis, accumsan faucibus nulla. Fusce auctor eleifend volutpat. Maecenas vel faucibus enim. Donec venenatis congue congue. Integer sit amet quam ac est aliquam aliquet. Ut commodo justo sit amet convallis scelerisque.
-
-\begin{enumerate}
-	\item First numbered item in a list
-	\item Second numbered item in a list
-	\item Third numbered item in a list
-\end{enumerate}
-
-Aliquam elementum nulla at arcu finibus aliquet. Praesent congue ultrices nisl pretium posuere. Nunc vel nulla hendrerit, ultrices justo ut, ultrices sapien. Duis ut arcu at nunc pellentesque consectetur. Vestibulum eget nisl porta, ultricies orci eget, efficitur tellus. Maecenas rhoncus purus vel mauris tincidunt, et euismod nibh viverra. Mauris ultrices tellus quis ante lobortis gravida. Duis vulputate viverra erat, eu sollicitudin dui. Proin a iaculis massa. Nam at turpis in sem malesuada rhoncus. Aenean tempor risus dui, et ultrices nulla rutrum ut. Nam commodo fermentum purus, eget mattis odio fringilla at. Etiam congue et ipsum sed feugiat. Morbi euismod ut purus et tempus. Etiam est ligula, aliquam eget porttitor ut, auctor in risus. Curabitur at urna id dui lobortis pellentesque.
 
 %------------------------------------------------
  
@@ -202,11 +168,65 @@ Unfortunately this formula is not easy to use in real context as the devices mov
 For what concerns the work shown above, we wrote our implementation in python and ran it on a google colab instance with multi-threading enabled in order to resemble the possible interaction with the network.
 We then executed experiments with different number of provers, different compromised devices rate in order to extract execution time for the most important step of the algorithm.
 After that we proceded by performing theorical considerations and calculations in order to estimate the computational complexity, the memory and communication cost, and the total time of the algorithm.
+
 \section{Results}
 \label{sec:results}
+\subsection{Time cost of Aggregation}
+For what concerns the duration of the process of aggregation we extracted the aggregation time of 1 aggregator with an increasing number of provers connected to him to see if our theoretical guesses are correct.
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_0.png} % Figure image
+	\caption{Aggregation time with 0\% bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
 
-In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
+Firstly we can see in figure 2 the aggregation time of up to 1000 provers with 0\% of them being bad provers, this means that all of them signed the default message, theoretically we supposed that the cost in time 
+for the process of aggregation wuold increase linearly with the number of provers connected to the same aggregator. We can clearly see that our supposition were correct.
+Now the question was if aggregation time depends on the number of bad provers within all the provers connected to the aggregator.\\
 
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_100.png} % Figure image
+	\caption{Aggregation time with 100\% bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+
+As we supposed the percentage of bad provers do not influence the time of aggregation, in fact with 100\% bad provers (figure 3) the graph is very close to the 0\% one.\\ 
+We extracted data for 0\% 25\% 50\% 75\% and 100\% of bad provers, the results in figure 4.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/aggregation_comparison.png} % Figure image
+	\caption{Aggregation time with all percentage of bad provers up to 1000 provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+
+\subsection{Time cost of Verification}
+The other parameter we wanted to investigate was the verification time of the aggregator with respect to the number of provers and the percentage of them not signing the default message.
+Theoretically we believed that the number of bad provers would make the verification time increase linearly, and on the other hand the time of verification should be independent on the number of legitimate provers.\\
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/Verification_0.png} % Figure image
+	\caption{Verification time cost with 0 bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+In Figure 5 we can see that the time of verification is in fact independent from the number of provers if they are all legitimate.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/verification_100.png} % Figure image
+	\caption{Verfication cost with all the provers being bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+Intsead, with 100\% of bad provers in Figure 6, the time of verification increase linearly with the number of provers, reaching up to 6000 seconds for the verification of 1000 bad provers.\\
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/verification_comparison.png} % Figure image
+	\caption{Verification time costs comparison with different percentage of bad provers} % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+The comparison of the verification time of 0\% 25\% 50\% 75\% 100\% bad provers is represented in Figure 7.\\
+
+\subsection{Memory cost}
+\begin{figure}
+	\includegraphics[width=\linewidth]{images/memorycost.png} % Figure image
+	\caption{Memory cost for the aggregator } % Figure caption
+	\label{bear} % Label for referencing with \ref{bear}
+\end{figure}
+In Figure 8 is represented the memory cost for the aggregator, theoretically we expected this to increase linearly with the number of bad neighbours due to the nature of the protocol identifying the compromised devices. In fact we proved this claim to be true and we can add to that the aggregator must suffer a memory cost that for the majority of low end devices is prohibiting having close to 1024Kb of memory.\\
 \section{Conclusions}
 
 In hac habitasse platea dictumst. Vivamus eu finibus leo. Donec malesuada dui non sagittis auctor. Aenean condimentum eros metus. Nunc tempus id velit ut tempus. Quisque fermentum, nisl sit amet consectetur ornare, nunc leo luctus leo, vitae mattis odio augue id libero. Mauris quis lectus at ante scelerisque sollicitudin in eu nisi. Nulla elit lacus, ultricies eu erat congue, venenatis semper turpis. Ut nec venenatis velit. Mauris lacinia diam diam, ac egestas neque sodales sed. Curabitur eu diam nulla. Duis nec turpis finibus, commodo diam sed, bibendum erat. Nunc in velit ullamcorper, posuere libero a, mollis mauris. Nulla vehicula quam id tortor ornare blandit. Aenean maximus tempor orci ultrices placerat. Aenean condimentum magna vulputate erat mattis feugiat.
