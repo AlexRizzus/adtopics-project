@@ -22,7 +22,9 @@ in a decentralized fashion.
 
 SANA(~\cite{sana}) is a CRA scheme that promises to inspect the overall
 status of an IoT network with a single and efficient operation.
-\todo{add explanation on tree propagation.}
+The attestation request is propragated by the owner to the best neighbour (\ie the node with the best connection) which proceeds to propagate the request to its neighbours.
+This operation is repeated until all the interested provers are reached.
+The provers, which are the leaves of the tree, respond by signing a message and then send it back through the tree.
 It does so by introducing a signature scheme called Optimistic Aggregated
 Signature (OAS) which allows the aggregation of the signatures coming from
 different devices.
@@ -30,9 +32,12 @@ The aggregated signature is smaller than the naive one (\ie list of appended
 signatures) and makes the verification cost dependant only on the number of
 compromised devices.
 SANA comes with estimations about its memory, communication, and computational costs. But the formulas neglect specifying some variables that prove to be decisive to determine these estimations.
-We chose to implement the protocol using an ECC algorithm based on Ethereum to handle the signing and verification phases of the protocol, then we analyzed the results to prove the claims that were given in the SANA paper and at last make some considerations about the criticality of this protocol.
+We chose to implement the protocol using an ECC algorithm based on Ethereum to handle the signing and verification phases of the protocol, then we analyzed the results to prove the claims that were given in the SANA paper and at last make some considerations about the criticalities of this protocol.
 
 In this article we verify the security claims made in SANA's paper.
 In particular we focus on checking the overall cost for running the protocol
-\todo{and the soundness of its propagation process (if done)}.
-\todo{list the results obtained.}
+and the soundness of its propagation process.
+We prove that the complexity of the verification is in fact linear with the number of compromised devices.
+On the other hand we also discuss on possible problems regarding the aggregation cost and memory cost for the Aggregators.
+We discuss the criticalities in scenarios where one or more devices (\eg Aggregators, Provers) are manomitted or malfunctioning.
+At last we present some considerations on the feasibility of SANA in a scope where the devices are small, moving and often unreliable.
