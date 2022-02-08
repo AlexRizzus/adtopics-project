@@ -1,0 +1,14 @@
+\section{Implementation details}
+
+\todo{Try to be more systematic. First describe the elliptic curve you chose
+and the reason why you chose it (it is a modern implementation from Ethereum +
+calculating pairings on existing curves is mathematically complex). Second-hand,
+describe python implementation (Python3.?, structure of the code, classes)}
+
+
+We wrote an implementation of the algorithm in Python, we first defined all the different classes in order to simulate all the nodes (Prover, Aggregator, Owner and Verifier) where neighbours can be assigned to each node in order to resemble a static network configuration.
+Before utilizing ''bn128'' we tried to define our own curve for the ECC cryptography implementation but for the vast majority of curves that you can choose don't have an easily computable bilinear map, so they were not suitable for our work. At last we decided to use an already existing curve called Barreto-Naherig curve.
+
+After choosing the curve we incorporated the ''bn128'' implementation in our code adding various helping function to generate the keys, software configurations, tokens and challenges.
+This implementation uses the Barreto-Naehrig curve on a finite field Zp with p of 256 bits, for the computation of the bilinear map this implementation relies on the Tate-pairing technique which is the fastest for this task. In fact, compared to the Weil pairing the Tate pairing requires only one iteration of the Miller's loop function instead of three simplyfying a lot the computation of the pairing.
+

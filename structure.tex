@@ -155,6 +155,28 @@
 
 \usepackage[backend=bibtex,style=authoryear,natbib=true]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
 
-\addbibresource{example.bib} % The filename of the bibliography
+\addbibresource{biblio.bib} % The filename of the bibliography
 
 \usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+
+
+%----------------------------------------------------------------------------------------
+%	ALESSANDRO'S ADDITIONS
+%----------------------------------------------------------------------------------------
+
+\newcommand{\ie}{\textit{i.e.,} }
+\newcommand{\eg}{\textit{e.g.,} }
+\newcommand{\wrt}{\textit{w.r.t.\ }}
+
+\newcommand{\todobox}[3]{%
+	\colorbox{#1}{\textcolor{white}{\sffamily\bfseries\scriptsize #2}}%
+	~\textcolor{blue}{#3} %
+	\textcolor{#1}{$\triangleleft$}%
+}
+\newcommand{\todo}[1]{\todobox{red}{TODO}{#1}}
+\newcommand{\feedback}[1]{\todobox{orange}{OK?}{#1}}
+\newcommand{\done}[1]{\todobox{blue}{DONE}{#1}}
+\newcommand{\rationale}[1]{\todobox{ForestGreen}{RATIONALE}{#1}}
+
+\usepackage{balance}
+\usepackage{subcaption}
