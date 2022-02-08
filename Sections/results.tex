@@ -53,7 +53,7 @@ Unfortunately this formula is not easy to use in real context as the devices mov
 
 Doing a comparison with the SANA's claims we obtained an higher comunication cost due to our keys being 512 bits long instead of 256 and the software configuration of provers being hashed to 256 bits.\\
 Instead, memory costs for provers are lower in our implementation and in SANA's paper memory cost for the Aggregator are missing, so it's not possible to make a comparison.\\
-Run-time costs are similar without considering the comunication time not present in our simulation.
+Run-time costs are similar without considering the comunication time not present in our simulation.\\
 
 \subsection{Aggregation cost}
 For what concerns the duration of the process of aggregation the observation focussed on one Aggregator aggregating the signature of up to 1000 provers .
@@ -68,6 +68,13 @@ Theoretically the number of bad provers would make the verification time increas
 This is due to the fact that the legitimate Provers sign the default message, thus being verified in constant time.\\
 Figure \ref{fig:verification_comparison} confirms that the time of verification is in fact independent from the number of provers if they are all legitimate (0\% bad provers).
 Intsead, with 100\% of bad provers, the time for verification increase linearly with the number of provers, reaching up to 6000 seconds for the verification of 1000 bad provers.
+
+
+
+\subsection{Memory cost}
+In Figure \ref{fig:memory_cost} is represented the memory cost for the Aggregator.
+Theoretically this is expected to increase linearly with the number of bad neighbours. This is due to the nature of the protocol identifying the compromised devices and storing public keys and message of all of them.\\
+Figure \ref{fig:memory_cost} confirms this belief and shows how having more than just 10 bad provers make the Aggregator use more than 1024Kb of memory.\\
 
 \begin{figure}
   \centering
@@ -87,10 +94,4 @@ Intsead, with 100\% of bad provers, the time for verification increase linearly 
 	\caption{Memory cost for the aggregator} 
   \label{fig:memory_cost}
 \end{figure}
-
-\subsection{Memory cost}
-In Figure \ref{fig:memory_cost} is represented the memory cost for the Aggregator.
-Theoretically this is expected to increase linearly with the number of bad neighbours. This is due to the nature of the protocol identifying the compromised devices and storing public keys and message of all of them.\\
-Figure \ref{fig:memory_cost} confirms this belief and shows how having more than just 10 bad provers make the Aggregator use more than 1024Kb of memory.\\
-
 
