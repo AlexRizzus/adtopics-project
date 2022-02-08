@@ -1,13 +1,18 @@
 \section{Implementation details}
+\begin{figure*}
+    \centering
+    \includegraphics[width=.90\linewidth]{Images/diagramma_classi.png}  
+    \caption{Class Diagram}
+    \label{fig:class_diagram}
+  \end{figure*}
 
-
-This SANA implementation uses ''bn128'', an ECC implementation that uses an already existing curve belonging to Barreto-Naherig set of curves.
-This implementation uses the Barreto-Naehrig curve on a finite field Zp with p of 256 bits.
-For the computation of the bilinear map ''bn128'' relies on the Tate-pairing technique which is the fastest for this task. In fact, it requires only one iteration of the Miller's loop function instead of three simplyfying a lot the computation of the pairing.
-We chose this implementation because it's a moder versione of an Elliptic-curve cryptosystem used from Ethereum
+This SANA implementation uses ''bn128'' (\cite{bn128_implementation}), an ECC implementation that uses an already existing curve belonging to the Barreto-Naherig set of curves.
+This implementation uses the Barreto-Naehrig curve (\cite{barreto_naehrig}) on a finite field Zp with p of 256 bits.
+The computation of the bilinear map ''bn128'' relies on the Tate-pairing technique which is the fastest for this task (\cite{tate_pairing}). It requires only one iteration of the Miller's loop function instead of three simplifying a lot the computation of the pairing.
+We chose this implementation because it's a modern version of an Elliptic-curve cryptosystem used from Ethereum
 It's used to generate keys, compute the signatures and verify them.
 Our SANA implementation has been written and tested on python 3.7.
-It defines a class for each actor in the protocol, they all inherit from the general Node class which contains all the common data structures and functions.
+It defines a class for each actor in the protocol as we can see in Figure \ref{fig:class_diagram}, they all inherit from the general Node class which contains all the common data structures and functions.
 On top of that the classes define:
 \begin{itemize}
     \item Owner: method handlerequest() to generate the Token and generateKeys() to generate keys for the new devices.
@@ -15,4 +20,5 @@ On top of that the classes define:
     \item Aggregator: method aggregateSignature().
     \item Prover: getSoftConfig() to retrieve its hashed software configuration.
 \end{itemize}
-These classes are instantiated during the simulation and each object has a set of nodes assigned as neighbours in order to simulate a network of devices.
+
+These classes are instantiated during the simulation and each object has a set of nodes assigned as neighbors to simulate a network of devices.

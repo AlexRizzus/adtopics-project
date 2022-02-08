@@ -1,10 +1,10 @@
 \section{Conclusions}
 
-Although many of the claims SANA made were verified in our implementation some other aspects were different and in particular situations this could lead to problems during the attestation process.
+Although many of the claims SANA made were verified in our implementation some other aspects were different and in particular situations, this could lead to problems during the attestation process.
 \subsection{Costs estimation}
 While the computational and communication costs have proven to be similar the original paper omitted the memory cost for the Aggregators. 
 The memory occupation for this actor grows linearly with the number of bad provers in the sub-tree of the node. 
-When we think of a network with hundreds of thousands of devices it's easy to find some compromised devices and in particular for the Aggregators that are close to the Verifier in the tree this could be a problem.
+When we think of a network with hundreds of thousands of devices it's easy to find some compromised devices and in particular, for the Aggregators that are close to the Verifier in the tree, this could be a problem.
 Concluding it's hard to think that this protocol could be used without knowing that at least the closest Aggregators have a reasonable amount of memory.
 
 \subsection{Concerns on the Aggregator role}
@@ -12,7 +12,7 @@ Since the typical use case for this protocol is a network of wireless and mobile
 The concerns are that if an Aggregator doesn't receive the signature of a node it cannot notify the Verifier about this. Thus the final verification will fail unless the Aggregator has a proper way to inform the Verifier about the missing signature.
 This solution however would bring more overhead for the Aggregators.
 Another concern is that a temporary disconnection of an Aggregator from the network would generate the same problem as above, leading to a failure of the final verification.
-In general the main issue is that there is no way to recover lost signature or notify if some are missing. Thus making the protocol sensitive to jamming and DDoS attacks on the Aggregators. 
+In general, the main issue is that there is no way to recover lost signatures or notify if some are missing. Thus making the protocol sensitive to jamming and DDoS attacks on the Aggregators. 
 
 \subsection{Concerns on the Prover role}
 When generating a response to the challenge, the Prover checks by itself if its software configuration is legitimate.
